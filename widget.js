@@ -1,63 +1,142 @@
 let mainObj = {};
-const setGoalType = (type) => {
-  switch (type) {
-    case "sub":
-      let subGoal = new Goal("sub");
-      return subGoal.init();
-    case "follower":
-      let followGoal = new Goal("follow");
-      return followGoal.init();
-    case "cheer":
-      let cheerGoal = new Goal("cheer");
-      return cheerGoal.init();
-    case "tip":
-      let tipGoal = new Goal("tip");
-      return tipGoal.init();
-  }
-};
+let goal = {};
+let goalType, goalObjectiveQuantity, goalActive, goalStartQuantity;
+let current = 0;
+
+const progress = document.querySelector(".progress-bar-container");
+progress.style.setProperty("--progress-bar-left", "0");
 
 window.addEventListener("onWidgetLoad", function (obj) {
+  init(obj, initGoal);
+  // setInitialGrow();
+});
+
+const init = (obj, initGoalCallback) => {
+  initialStart = false;
   mainObj.data = obj["detail"]["session"]["data"];
   mainObj.recents = obj["detail"]["recents"];
   mainObj.currency = obj["detail"]["currency"];
   mainObj.channelName = obj["detail"]["channel"]["username"];
   mainObj.apiToken = obj["detail"]["channel"]["apiToken"];
   mainObj.fieldData = obj["detail"]["fieldData"];
+
+  goalActive = mainObj.fieldData.goalActive;
+  goalType = mainObj.fieldData.goalType;
+  goalStartQuantity = mainObj.fieldData.goalStartQuantity;
+  goalObjectiveQuantity = mainObj.fieldData.goalObjectiveQuantity;
   console.log(mainObj);
-  const goalType = mainObj.fieldData.goalType;
-  setGoalType(goalType);
+  initGoalCallback(goalType);
+};
+
+const initGoal = (type) => {
+  let current = goalStartQuantity;
+  let step;
+  let progressBarWidth = document.querySelector(
+    ".progress-bar-container"
+  ).offsetWidth;
+
+  if (type === "tip" || type === "cheer") {
+    step = progressBarWidth / goalObjectiveQuantity;
+  } else {
+    step = progressBarWidth / (goalObjectiveQuantity - goalStartQuantity);
+  }
+
+  goal = {
+    type: type,
+    current: current,
+    step: step,
+  };
+
+  const progression = document.querySelector(".progression");
+  progression.innerText = `${goal.current}` + `/` + `${goalObjectiveQuantity}`;
+};
+
+window.addEventListener("onEventReceived", async (obj) => {
+  let { listener, event } = obj.detail;
+  let isBulk = event.bulkGifted;
+  let repeatedEvents = 0;
+  let maxEvents = 0;
+
+  if (isBulk && repeatedEvents < maxEvents) {
+    repeatedEvents++;
+    return;
+  }
+
+  let dictionary = {
+    "subscriber-latest": "subscriber",
+    "follower-latest": "follower",
+    "cheer-latest": "cheer",
+    "tip-latest": "tip",
+    "bulk": "bulk"
+  };
+
+  if(event.bulkGifted) {
+    grow("bulk", event.amount)
+    return;
+  }
+
+  if (goal.type === "tip" || goal.type === "cheer") {
+    console.log("asdfafsdasdfadsf");
+    dictionary[listener] === goal.type && growBitsTips(obj.detail);
+    return;
+  } else {
+    dictionary[listener] === goal.type && grow();
+  }
 });
-class Goal {
-  constructor(type) {
-    this.type = type;
-  }
 
-  init() {
-    return this.type;
-  }
+let completed = false;
 
-  get objective() {
-    // let objective = mainObj.fieldData.objective;
-    let objective = 20;
-    // mainObj.data.type-goal = objective ---- this will set the goal in SE the same as the goal in fieldData, to make it easier to change the goal, instead of going to SE main page you can do this from the overlay
-    // maybe we want to allow people to change goal from SE main page, cause not sure if everyone will want to go into the widget to be able to edit this goal
-    return objective;
-  }
-
-  get current() {
-    // if type is cheer or tip, we will use cheer.count, cause this resets on every session (you dont want a cheer/tip goal to count from your starting streaming career)
-    // otherwise we will follower/sub-total, which is the total amount of followers/subs you have ever had, great for this kind of goals
-    let current = 0;
-    return current;
-  }
-}
-
-const grow = () => {
+const growBitsTips = (data) => {
+  let amount = data.event.amount;
   let progressBar = document.querySelector(".progress-bar");
-  let currentWidth = progressBar.offsetWidth;
-  console.log(currentWidth)
-  progressBar.style.width = `${currentWidth + 10}px`;
-}
+  let currentLeft = progressBar.offsetLeft;
+  let step = goal.step * amount;
+  if (
+    goal.current < goalObjectiveQuantity &&
+    goal.current + amount >= goalObjectiveQuantity
+  ) {
+    progressBar.style.left = `0`;
+    const progression = document.querySelector(".progression");
+    progression.innerText = `${goal.current + amount}` + `/` + `${goalObjectiveQuantity}`;
+    return;
+  }
+  goal.current += amount;
+  progressBar.style.left = `${currentLeft + step}px`;
+  const progression = document.querySelector(".progression");
+  progression.innerText = `${goal.current}` + `/` + `${goalObjectiveQuantity}`;
+};
 
-const click = document.querySelector(".click");
-click.addEventListener("click", grow);
+let total;
+const grow = (type = "sub", amount = 1) => {
+  let progressBar = document.querySelector(".progress-bar");
+  let currentLeft = progressBar.offsetLeft;
+  total = goal.current + amount;
+  if (goal.current + amount >= goalObjectiveQuantity) {
+    progressBar.style.left = `0`;
+    const progression = document.querySelector(".progression");
+    total > goalObjectiveQuantity
+      ? (progression.innerText = `${goal.current}` + `/` + `${goalObjectiveQuantity}`)
+      : (progression.innerText = `${
+          goal.current + amount
+        }`+ `/` + `${goalObjectiveQuantity}`);
+    return;
+  }
+  if (goal.current < goalObjectiveQuantity) {
+    goal.current += amount;
+    progressBar.style.left = `${currentLeft + goal.step * amount}px`;
+    const progression = document.querySelector(".progression");
+
+    progression.innerText = `${goal.current}` + `/` + `${goalObjectiveQuantity}`;
+  }
+};
+
+// const setInitialGrow = () => {
+//   if (goalStartQuantity !== 0) {
+//     let progressBar = document.querySelector(".progress-bar");
+//     let currentLeft = progressBar.offsetLeft;
+//     let step = goal.step * goalStartQuantity;
+//     progressBar.style.left = `${currentLeft + step}px`;
+//     const progression = document.querySelector(".progression");
+//     progression.innerText = `${goal.current}/${goalObjectiveQuantity}`;
+//   }
+// };
