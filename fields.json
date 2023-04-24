@@ -5,10 +5,40 @@
     "value": "",
     "group": "Customization"
   },
+  "goalObjectiveQuantity": {
+    "type": "number",
+    "label": "Goal objective:",
+    "value": 37000,
+    "group": "Customization",
+    "min": 1,
+    "max": 100000,
+    "step": 1
+  },
+  "goalStartQuantity": {
+    "type": "number",
+    "label": "Goal start:",
+    "value": 0,
+    "group": "Customization",
+    "min": 1,
+    "max": 100000,
+    "step": 1
+  },
+  "goalType": {
+    "type": "dropdown",
+    "label": "Goal type:",
+    "value": "cheer",
+    "group": "Customization",
+    "options": {
+      "subscriber": "Sub",
+      "follower": "Follow",
+      "cheer": "Cheer",
+      "tip": "Tip"
+    }
+  },
   "subText": {
     "type": "text",
     "label": "Custom text for SUB (max 40)",
-    "value": "(user) just suscribed!",
+    "value": "Supermegalongname gifted a sub to supermegalongnameeeeeeeeeeeeeeeeeex2!",
     "group": "Events"
   },
   "followText": {
@@ -82,44 +112,15 @@
       "false": "No"
     }
   },
-  "goalType": {
-    "type": "dropdown",
-    "label": "Goal type:",
-    "value": "subscriber",
-    "group": "Customization",
-    "options": {
-      "subscriber": "Sub",
-      "follower": "Follow",
-      "cheer": "Cheer",
-      "tip": "Tip"
-    }
-  },
-  "goalObjectiveQuantity": {
-    "type": "number",
-    "label": "Goal objective",
-    "value": 37,
-    "group": "Customization",
-    "min": 1,
-    "max": 100000,
-    "step": 1
-  },
-  "goalStartQuantity": {
-    "type": "number",
-    "label": "Goal start",
-    "value": 0,
-    "group": "Customization",
-    "min": 0,
-    "max": 100000,
-    "step": 1
-  },
   "theme": {
     "type": "dropdown",
     "label": "Theme",
-    "value": "pink",
+    "value": "purple",
     "group": "Customization",
     "options": {
-      "pink": "Light",
-      "purple": "Dark"
+      "pink": "Pink",
+      "purple": "Purple",
+      "dark": "Dark"
     }
   }
 }

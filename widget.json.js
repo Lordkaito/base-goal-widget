@@ -45,7 +45,7 @@ let fieldData = {
   followText: {
     type: "text",
     label: "Custom text for FOLLOW (max 40)",
-    value: "just followed!",
+    value: "Lordkaito_ just followed!",
     group: "Events",
   },
   cheerText: {
@@ -88,7 +88,7 @@ let fieldData = {
     label: "Time to delete messages (max 60):",
     type: "number",
     group: "Customization",
-    value: 10,
+    value: 5,
     min: 1,
     max: 60,
     step: 1,
@@ -116,11 +116,12 @@ let fieldData = {
   theme: {
     type: "dropdown",
     label: "Theme",
-    value: "pink",
+    value: "bowser",
     group: "Customization",
     options: {
-      pink: "Pink",
-      purple: "Purple",
+      peach: "Peach",
+      mario: "Mario",
+      bowser: "Bowser",
     },
   },
 };
