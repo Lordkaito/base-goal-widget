@@ -8,7 +8,7 @@ let fieldData = {
   goalObjectiveQuantity: {
     type: "number",
     label: "Goal objective:",
-    value: 37000,
+    value: 37,
     group: "Customization",
     min: 1,
     max: 100000,
@@ -45,7 +45,7 @@ let fieldData = {
   followText: {
     type: "text",
     label: "Custom text for FOLLOW (max 40)",
-    value: "Lordkaito_ just followed!",
+    value: "just followed!",
     group: "Events",
   },
   cheerText: {
@@ -88,7 +88,7 @@ let fieldData = {
     label: "Time to delete messages (max 60):",
     type: "number",
     group: "Customization",
-    value: 5,
+    value: 10,
     min: 1,
     max: 60,
     step: 1,
@@ -116,12 +116,11 @@ let fieldData = {
   theme: {
     type: "dropdown",
     label: "Theme",
-    value: "bowser",
+    value: "pink",
     group: "Customization",
     options: {
-      peach: "Peach",
-      mario: "Mario",
-      bowser: "Bowser",
+      pink: "Pink",
+      purple: "Purple",
     },
   },
 };
